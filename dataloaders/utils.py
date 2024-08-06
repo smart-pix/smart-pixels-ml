@@ -1,6 +1,31 @@
+import shutil
+from pathlib import Path
 import tensorflow as tf
 import keras
 import numpy as np
+
+def safe_remove_directory(directory_path):
+    if Path(directory_path).exists():
+        print(f"Directory {directory_path} is removed...")
+        shutil.rmtree(directory_path)
+    else:
+        print(f"Directory {directory_path} does not exist and cannot be removed.")
+
+def check_GPU():
+    # set gpu growth
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+      try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+          tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+      except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
+    else:
+        print("No GPU(s)")
 
 def data_prep_quantizer(data, bits=3, int_bits=0): # remember there's a secret sign bit
     frac_bits = bits - int_bits
