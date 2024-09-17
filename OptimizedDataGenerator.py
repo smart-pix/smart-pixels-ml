@@ -14,7 +14,7 @@ import random
 import logging
 import gc
 
-from . import utils
+import utils
 
 
 # custom quantizer
