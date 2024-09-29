@@ -2,7 +2,7 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 
 # custom loss function
-def custom_loss(y, p_base, minval=1e-9, maxval=1e9, scale = 512):
+def custom_loss(y, p_base, minval=1e-9, maxval=1e9):
     
     p = p_base
     
@@ -29,5 +29,5 @@ def custom_loss(y, p_base, minval=1e-9, maxval=1e9, scale = 512):
     likelihood = tf.clip_by_value(likelihood,minval,maxval)
 
     NLL = -1*tf.math.log(likelihood)
-
-    return tf.keras.backend.sum(NLL) 
+    
+    return tf.keras.backend.sum(NLL)
