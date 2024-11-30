@@ -13,9 +13,8 @@ import datetime
 import random 
 import logging
 import gc
-
-from . import utils
-
+import utils
+from sklearn.preprocessing import MinMaxScaler
 
 # custom quantizer
 
@@ -62,9 +61,11 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             quantize: bool = False,
             max_workers: int = 1,
                  
+            #scaling_factors=np.array([150, 37.5, 8.66,  0.2824]),
             **kwargs,
             ):
-        super().__init__() 
+        super().__init__()
+        #self.scaling_factors = scaling_factors 
 
         """
         Data Generator to streamline data input to the network direct from the directory.
@@ -97,9 +98,10 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         seed: Random seed for shuffling.
         quantize: Whether to quantize the data.
         """
-
-
         # decide on which time stamps to load
+        self.data_directory_path = data_directory_path
+        self.labels_directory_path = labels_directory_path
+
         self.use_time_stamps = np.arange(0,20) if use_time_stamps == -1 else use_time_stamps
         len_xy, ntime = 13*21, 20
         idx = [[i*(len_xy),(i+1)*(len_xy)] for i in range(ntime)] # 20 time stamps of length 13*21
@@ -131,6 +133,9 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         self.label_files = [
             labels_directory_path + recon_file.split('/')[-1].replace("recon" + data_format, "labels") for recon_file in self.recon_files
         ]
+        
+        # Call the compute_scaling_factors method to initialize scaling factors
+        self.scaling_factors = self.compute_scaling_factors()
 
         self.file_offsets = [0]
         self.dataset_mean = None
@@ -332,7 +337,12 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
         # print(f'start_index: {index}\t end_index: {batch_size}')
         X = recon_df[index:batch_size]
-        y = labels_df[index:batch_size] / np.array([75., 18.75, 8.0, 0.5])
+        y = labels_df[index:batch_size] / np.array([
+            self.scaling_factors['x-midplane'],
+            self.scaling_factors['y-midplane'],
+            self.scaling_factors['cotAlpha'],
+            self.scaling_factors['cotBeta']
+        ])
     
         if self.include_y_local:
             y_local = labels_df.iloc[chosen_idxs]["y-local"].values
@@ -447,3 +457,60 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         if self.shuffle:
             self.rng.shuffle(self.tfrecord_filenames)
             self.seed += 1 # So that after each epoch the batch is shuffled with a different seed (deterministic)
+
+    def compute_scaling_factors(self):
+        """
+        Compute scaling factors for the dataset using MinMaxScaler based on all
+        parquet files in self.data_directory_path and self.labels_directory_path.
+    
+        Returns:
+            dict: Scaling factors for ['x-midplane', 'y-midplane', 'cotAlpha', 'cotBeta'].
+        """
+
+        # Relevant columns to scale
+        columns = ['x-midplane', 'y-midplane', 'cotAlpha', 'cotBeta']
+        all_data = []
+    
+        # List all parquet files in the reconstruction and label directories
+        recon_filenames = sorted([
+            f for f in os.listdir(self.data_directory_path) if f.endswith(".parquet") and "recon" in f
+        ])
+        label_filenames = sorted([
+            f for f in os.listdir(self.labels_directory_path) if f.endswith(".parquet") and "labels" in f
+        ])
+    
+        # Iterate through reconstruction and label files
+        for recon_file, label_file in zip(recon_filenames, label_filenames):
+            recon_path = os.path.join(self.data_directory_path, recon_file)
+            label_path = os.path.join(self.labels_directory_path, label_file)
+    
+            if os.path.exists(label_path):  # Only process if the file exists
+                # Load label data
+                labels_df = pd.read_parquet(label_path)
+    
+                # Extract relevant columns
+                data = labels_df[columns]
+                all_data.append(data)
+            else:
+                print(f"File(s) missing: {recon_path}, {label_path}")
+    
+        # Combine all data into a single DataFrame
+        combined_data = pd.concat(all_data, axis=0)
+    
+        # Initialize MinMaxScaler
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+        scaler.fit(combined_data)
+    
+        # Compute scaling factors as the larger absolute value of min and max
+        self.scaling_factors = {
+            col: max(abs(scaler.data_min_[i]), abs(scaler.data_max_[i]))
+            for i, col in enumerate(columns)
+        }
+    
+        # Print scaling factors for debugging
+        print("Scaling factors computed successfully:")
+        for col, factor in self.scaling_factors.items():
+            print(f"{col}: scaling factor = {factor:.4f}")
+        
+        return self.scaling_factors
+
