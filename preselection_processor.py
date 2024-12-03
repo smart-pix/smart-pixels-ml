@@ -5,6 +5,8 @@ import os
 import shutil
 from tqdm import tqdm
 
+# Make sure to edit the paths in preselection_processing() for each dataset you process!
+
 def preselection_processing(pitch):
     data_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/recon3D/'.format(pitch)
     labels_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/labels/'.format(pitch)
@@ -22,8 +24,8 @@ def preselection_processing(pitch):
     joined_files = list(zip(recon3D_files, labels_files))
     
     # filter the parquet files, then save them to a new directory
-    data_preselection_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/recon3D_preselection/'.format(pitch)
-    labels_preselection_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/labels_preselection/'.format(pitch)
+    data_preselection_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/recon3D_cotBeta1P5/'.format(pitch)
+    labels_preselection_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/labels_cotBeta1P5/'.format(pitch)
 
     if os.path.isdir(data_preselection_directory_path):
         shutil.rmtree(data_preselection_directory_path)
@@ -44,6 +46,10 @@ def preselection_processing(pitch):
         preselections = abs(labels_temp_df['cotBeta']) <= 1.5
         recon3D_df = recon3D_temp_df[preselections].reset_index(drop=True)
         labels_df = labels_temp_df[preselections].reset_index(drop=True)
+
+        # save to new directory
+        recon3D_df.to_parquet(data_preselection_directory_path + recon3D_filename.split('/')[-1])
+        labels_df.to_parquet(labels_preselection_directory_path + labels_filename.split('/')[-1])
 
 if __name__ == '__main__':
     print('*** Preselection Processor ***')
