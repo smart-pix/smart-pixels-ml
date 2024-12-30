@@ -131,6 +131,9 @@ def generate_dummy_data(num_files=NUM_DUMMY_FILES):
 
 
 def validate_parquet_files(directory):
+    """
+    Checks if there are any valid Parquet files in a given directory.
+    """
     files = glob.glob(os.path.join(directory, "*.parquet"))
     if not files:
         raise ValueError(f"No valid parquet files found in {directory}.")
@@ -202,23 +205,35 @@ def generate_tfrecords():
     return training_generator, validation_generator
 
 def load_tfrecords():
+    """
+    Load pre-generated TFRecords for training and validation.
+    """
     log_info(f"Loading TFRecords...")
+
+    # Initialize training data generator using TFRecords
     training_generator = OptimizedDataGenerator(
-        load_from_tfrecords_dir = TFRECORDS_DIR_TRAIN,
-        max_workers = 1,
-        seed = 10,
-        quantize = True
+        load_from_tfrecords_dir=TFRECORDS_DIR_TRAIN,
+        max_workers=1,
+        seed=10,
+        quantize=True
     )
+
+    # Initialize validation data generator using TFRecords
     validation_generator = OptimizedDataGenerator(
-        load_from_tfrecords_dir = TFRECORDS_DIR_VALIDATION,
-        max_workers = 1,
-        seed = 10,
-        quantize = True
+        load_from_tfrecords_dir=TFRECORDS_DIR_VALIDATION,
+        max_workers=1,
+        seed=10,
+        quantize=True
     )
+
     log_success(f"TFRecord loading completed.")
     return training_generator, validation_generator
 
 def test_model_generation():
+    """
+    Test the generation of the model.
+    """
+    
     log_info(f"Building model...")
     try:
         model = CreateModel((13,21,2), n_filters=5, pool_size=3)
@@ -235,7 +250,9 @@ def test_model_generation():
         sys.exit(1)
 
 def test_train_model():
-
+    """
+    Test the training of the model.
+    """
     es = tf.keras.callbacks.EarlyStopping(
         patience = 2,  # small patience for quick test
         restore_best_weights = True
