@@ -133,10 +133,10 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="models-module">Models Module</h1>
-<p>The <code>models.py</code> file defines <strong>Mixture Density Network (MDN)</strong> network with a <strong>4D Multivariate Normal Distribution</strong> neural network architectures using quantized layers. The implementation uses QKeras to quantize the weights and activations of the network.</p>
+<p>The <code>models.py</code> file defines <strong>Mixture Density Network (MDN)</strong> network with a <strong>4D Multivariate Normal Distribution</strong> neural network architecture using quantized layers. The implementation uses QKeras to quantize the weights and activations of the network.</p>
 <h2 id="functions">Functions</h2>
 <h3 id="createmodelshape-n_filters-pool_size"><code>CreateModel(shape, n_filters, pool_size)</code></h3>
-<p>Creates a quantized neural network model for regression task with quantized layers and activations as in <a href="../../Images/ML_model_arch.png">Model</a>. The model has <code>14</code> output nodes with <code>4</code> being the target variables and the the rest <code>10</code> being the co-variances.</p>
+<p>Creates a quantized neural network model for regression task with quantized layers and activations as in <a href="../../Images/ML_model_arch.png">Model</a>. The model has <code>14</code> output nodes with <code>4</code> being the target variables and the rest <code>10</code> being the co-variances.</p>
 <ul>
 <li><strong>Arguments</strong>:</li>
 <li><code>shape</code> (tuple): Input shape (e.g., <code>(13, 21, 2)</code>/ <code>(13, 21, 20)</code>).</li>
@@ -145,7 +145,7 @@
 <li><strong>Returns</strong>:</li>
 <li><code>keras.Model</code>: A compiled Keras model instance.</li>
 <li><strong>Example</strong>:
-  ```python
+ ```python
   from models import CreateModel</li>
 </ul>
 <p>model = CreateModel((13, 21, 2), n_filters=5, pool_size=3)

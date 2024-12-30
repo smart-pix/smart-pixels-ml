@@ -156,7 +156,7 @@
   <a href="https://github.com/smart-pix/smart-pixels-ml"><img src="https://img.shields.io/github/forks/smart-pix/smart-pixels-ml?style=social"></a>
 </p>
 
-<p>Smart Pixels is a project focusses on implementaing machine learnign models directly on silicon pixels or future detectors to enchance the inference of charged particle track parameters. We here use a MDN (Mixture Density Network) with one gaussian, this model predicts the mean value of target variable and teh associated uncertainity to that prediction with NLL (Negative Log-likelihood Loss) as the loss function to minimize. </p>
+<p>Smart Pixels is a project focused on implementing machine learning models directly on silicon pixels or future detectors to enhance the inference of charged particle track parameters. We here use an MDN (Mixture Density Network) with one Gaussian. This model predicts the mean value of the target variable and the associated uncertainty to that prediction, with NLL (Negative Log-likelihood Loss) as the loss function to minimize. </p>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ul>
 <li><a href="#getting-started">Getting Started</a></li>
@@ -183,7 +183,7 @@ pip install -r requirements.txt
 <pre><code class="language-bash">python test_run.py`
 </code></pre>
 <h3 id="usage">Usage</h3>
-<p>For usage guide refer to <a href="usage/">Usage Guide</a></p>
+<p>For the usage guide refer to <a href="usage/">Usage Guide</a></p>
 <h2 id="dataset">Dataset</h2>
 <p>Download the simulated data from: <a href="https://doi.org/10.5281/zenodo.7331128">zenodo</a>
 and <a href="https://docs.google.com/document/d/1ZoqVyJOOAXhzt2egMWh3OoNJ6lWq5lNR6sjcYON4Vlo/edit?tab=t.0#heading=h.k6tyal7z5t5l">PixelAV</a></p>
@@ -197,7 +197,7 @@ and <a href="https://docs.google.com/document/d/1ZoqVyJOOAXhzt2egMWh3OoNJ6lWq5lN
 </li>
 </ul>
 <h3 id="data-visualization">Data Visualization</h3>
-<p>For visualization of the how the input data looks like, we have o define the path towards the <code>dataX</code> and optionally to the <em>labels</em> as </p>
+<p>For visualization of the how the input data looks like, we have to define the path towards the <code>dataX</code> and optionally to the <em>labels</em> as </p>
 <pre><code class="language-python">import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -213,10 +213,10 @@ plt.show()
 
 </code></pre>
 <h2 id="data-generator">Data Generator</h2>
-<p>Due to the large size of the dataset, the entire dataset can not be loaded on to the RAM. Hence we use datagenerators to load the dataset on the fly during training with inbuilt quantization, standardization, shuffling, etc. 
+<p>Due to the large size of the dataset, the entire dataset can not be loaded into RAM. Hence, we use data generators to load the dataset on the fly during training with inbuilt quantization, standardization, shuffling, etc. 
 Refer to <a href="api/data_generator/">data generator</a> for more details.</p>
 <h2 id="testing">Testing</h2>
-<p>For testing that everything is working fine try running the simple <code>test_run.py</code> file as</p>
+<p>To test that everything is working fine try running the simple <code>test_run.py</code> file as</p>
 <pre><code class="language-bash">python test_run.py
 </code></pre>
 <h2 id="model-architecture">Model Architecture</h2>
@@ -237,14 +237,14 @@ model.summary()
 | QActivation          | <code>(None, 11, 19, 5)</code>| 0          |
 | QConv2D              | <code>(None, 11, 19, 5)</code>| 30         |
 | QActivation          | <code>(None, 11, 19, 5)</code>| 0          |
-| AveragePooling2D     | <code>(None, 3, 6, 5)</code>  | 0          |
-| QActivation          | <code>(None, 3, 6, 5)</code>  | 0          |
-| Flatten              | <code>(None, 90)</code>       | 0          |
-| QDense               | <code>(None, 16)</code>       | 1456       |
-| QActivation          | <code>(None, 16)</code>       | 0          |
-| QDense               | <code>(None, 16)</code>       | 272        |
-| QActivation          | <code>(None, 16)</code>       | 0          |
-| QDense               | <code>(None, 14)</code>       | 238        |</p>
+| AveragePooling2D     | <code>(None, 3, 6, 5)</code> | 0          |
+| QActivation          | <code>(None, 3, 6, 5)</code> | 0          |
+| Flatten              | <code>(None, 90)</code> | 0          |
+| QDense               | <code>(None, 16)</code> | 1456       |
+| QActivation          | <code>(None, 16)</code> | 0          |
+| QDense               | <code>(None, 16)</code> | 272        |
+| QActivation          | <code>(None, 16)</code> | 0          |
+| QDense               | <code>(None, 14)</code> | 238        |</p>
 <h2 id="model-evaluation">Model Evaluation</h2>
 <p>Refer to <a href="api/evaluate/">Evaluate</a> for more details</p></div>
             </div>
@@ -328,5 +328,5 @@ model.summary()
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2024-11-21 03:43:40.643104+00:00
+Build Date UTC : 2024-12-30 20:10:37.977351+00:00
 -->
