@@ -1,11 +1,11 @@
 # Models Module
 
-The `models.py` file defines **Mixture Density Network (MDN)** network with a **4D Multivariate Normal Distribution** neural network architectures using quantized layers. The implementation uses QKeras to quantize the weights and activations of the network.
+The `models.py` file defines **Mixture Density Network (MDN)** network with a **4D Multivariate Normal Distribution** neural network architecture using quantized layers. The implementation uses QKeras to quantize the weights and activations of the network.
 
 ## Functions
 
 ### `CreateModel(shape, n_filters, pool_size)`
-Creates a quantized neural network model for regression task with quantized layers and activations as in [Model](../Images/ML_model_arch.png). The model has `14` output nodes with `4` being the target variables and the the rest `10` being the co-variances.
+Creates a quantized neural network model for regression task with quantized layers and activations as in [Model](../Images/ML_model_arch.png). The model has `14` output nodes with `4` being the target variables and the rest `10` being the co-variances.
 
 - **Arguments**:
   - `shape` (tuple): Input shape (e.g., `(13, 21, 2)`/ `(13, 21, 20)`).
@@ -14,7 +14,7 @@ Creates a quantized neural network model for regression task with quantized laye
 - **Returns**:
   - `keras.Model`: A compiled Keras model instance.
 - **Example**:
-  ```python
+ ```python
   from models import CreateModel
 
   model = CreateModel((13, 21, 2), n_filters=5, pool_size=3)

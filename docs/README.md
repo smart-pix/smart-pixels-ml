@@ -9,7 +9,7 @@
 
 
 
-Smart Pixels is a project focusses on implementaing machine learnign models directly on silicon pixels or future detectors to enchance the inference of charged particle track parameters. We here use a MDN (Mixture Density Network) with one gaussian, this model predicts the mean value of target variable and teh associated uncertainity to that prediction with NLL (Negative Log-likelihood Loss) as the loss function to minimize. 
+Smart Pixels is a project focused on implementing machine learning models directly on silicon pixels or future detectors to enhance the inference of charged particle track parameters. We here use an MDN (Mixture Density Network) with one Gaussian. This model predicts the mean value of the target variable and the associated uncertainty to that prediction, with NLL (Negative Log-likelihood Loss) as the loss function to minimize. 
 
 ## Table of Contents
 - [Getting Started](#getting-started)
@@ -34,11 +34,11 @@ pip install -r requirements.txt
 ```
 Testing successful installation by running 
 ```bash
-python test_run.py
+python test_run.py`
 ```
 ### Usage
 
-For usage guide refer to [Usage Guide](usage.md)
+For the usage guide refer to [Usage Guide](usage.md)
 
 
 
@@ -53,7 +53,7 @@ and [PixelAV](https://docs.google.com/document/d/1ZoqVyJOOAXhzt2egMWh3OoNJ6lWq5l
 - **Labels (dataY)**: _Four_ target variables are chosen as the labls viz. local $x$, local $y$, $\alpha$ angle and $\beta$ angle, associated with the particle trajectory.
 
 ### Data Visualization
-For visualization of the how the input data looks like, we have o define the path towards the `dataX` and optionally to the _labels_ as 
+For visualization of the how the input data looks like, we have to define the path towards the `dataX` and optionally to the _labels_ as 
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -71,11 +71,11 @@ plt.show()
 ```
 
 ## Data Generator
-Due to the large size of the dataset, the entire dataset can not be loaded on to the RAM. Hence we use datagenerators to load the dataset on the fly during training with inbuilt quantization, standardization, shuffling, etc. 
+Due to the large size of the dataset, the entire dataset can not be loaded into RAM. Hence, we use data generators to load the dataset on the fly during training with inbuilt quantization, standardization, shuffling, etc. 
 Refer to [data generator](api/data_generator.md) for more details.
 
 ## Testing 
-For testing that everything is working fine try running the simple `test_run.py` file as
+To test that everything is working fine try running the simple `test_run.py` file as
 ```bash
 python test_run.py
 ```
@@ -104,14 +104,14 @@ This generates a model with the following architecture:
 | QActivation          | `(None, 11, 19, 5)`| 0          |
 | QConv2D              | `(None, 11, 19, 5)`| 30         |
 | QActivation          | `(None, 11, 19, 5)`| 0          |
-| AveragePooling2D     | `(None, 3, 6, 5)`  | 0          |
-| QActivation          | `(None, 3, 6, 5)`  | 0          |
-| Flatten              | `(None, 90)`       | 0          |
-| QDense               | `(None, 16)`       | 1456       |
-| QActivation          | `(None, 16)`       | 0          |
-| QDense               | `(None, 16)`       | 272        |
-| QActivation          | `(None, 16)`       | 0          |
-| QDense               | `(None, 14)`       | 238        |
+| AveragePooling2D     | `(None, 3, 6, 5)` | 0          |
+| QActivation          | `(None, 3, 6, 5)` | 0          |
+| Flatten              | `(None, 90)` | 0          |
+| QDense               | `(None, 16)` | 1456       |
+| QActivation          | `(None, 16)` | 0          |
+| QDense               | `(None, 16)` | 272        |
+| QActivation          | `(None, 16)` | 0          |
+| QDense               | `(None, 14)` | 238        |
 
 ## Model Evaluation
 Refer to [Evaluate](api/evaluate.md) for more details

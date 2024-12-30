@@ -12,7 +12,7 @@ Add other links here
 
 Ensure the two directories Data and Labels are present.
 
-## 3. Data Preperation
+## 3. Data Preparation
 
 - Define the paths to the data and labels directories (look at [utils](api/utils.md) for more details)
 - Configure datagenerator parameters (look at [data_generator](api/data_generator.md) for more details)
@@ -26,7 +26,7 @@ Look at [model](api/models.md) for more details on how to do that.
 For loss function see [loss](api/loss.md).
 
 ## 5. Model Training 
-If everything is setup correctly, the training should start and run seamlessly.
+If everything is set up correctly, the training should start and run seamlessly.
 For example:
 ```python
 model.fit(
@@ -52,4 +52,4 @@ Look at [predict](api/predict.md)
 
 
 ## 8. Add Additional Instructions
-here are some additional instructions
+Here are some additional instructions

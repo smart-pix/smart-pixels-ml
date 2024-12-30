@@ -1,13 +1,13 @@
 # datagenerator module
 
-This module contains the `OptimizedDataGenerator` class, which is used to generate batches of data for training and validation during model training. This datagenerator handles the loading and processing of the data, including shuffling, standardization, and quantization of the data. It does by pre-processing the data and saving it as TFRecord files and then loading the batches on the fly during training.
+This module contains the `OptimizedDataGenerator` class, which generates batches of data for training and validation during model training. This datagenerator handles the loading and processing of the data, including shuffling, standardization, and quantization of the data. It does by pre-processing the data and saving it as TFRecord files and then loading the batches on the fly during training.
 
 
 ### **Methods**
 
 ### `__init__(...)`
 
-Initialize the `OptimizedDataGenerator` class with the specified parameters to configure the data generator for preprocessing and batching
+Initialize the `OptimizedDataGenerator` class with the specified parameters to configure the data generator for preprocessing and batching.
 
 #### **Arguments**
 
@@ -56,7 +56,7 @@ training_generator = OptimizedDataGenerator(
 )
 ```
 
-Same goes for the `validation generator`. 
+The same goes for the `validation generator`. 
 
 #### Using the Data Generators
 The data generators can be directly passed to the fit method of a Keras model.
@@ -69,7 +69,7 @@ history = model.fit(
                         epochs=1000,
                         shuffle=False,
                         verbose=1
-                    )
+ )
 ```
 
 
