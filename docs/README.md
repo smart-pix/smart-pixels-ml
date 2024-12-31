@@ -34,7 +34,7 @@ pip install -r requirements.txt
 ```
 Testing successful installation by running 
 ```bash
-python test_run.py`
+python test_run.py
 ```
 ### Usage
 
