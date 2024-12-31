@@ -5,7 +5,7 @@
 #  1. Required dependencies are installed.
 #  2. Minimal directory structure is set up.
 #  3. Basic data generation logic runs without errors.
-#  4. Generates TFRecords via custom data generator.
+#  4. Generates TFRecords via Optimized data generator.
 #  5. Builds and trains a small model to ensure everything runs.
 #################################################################
 
