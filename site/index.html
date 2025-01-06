@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Smart Pixels ML Documentation</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">Smart Pixels ML Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="." class="nav-link active" aria-current="page">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="usage/" class="nav-link">Usage</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API Reference</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="api/utils/" class="dropdown-item">Utils</a>
+</li>
+                                    
+<li>
+    <a href="api/models/" class="dropdown-item">Models</a>
+</li>
+                                    
+<li>
+    <a href="api/loss/" class="dropdown-item">Loss</a>
+</li>
+                                    
+<li>
+    <a href="api/data_generator/" class="dropdown-item">Data Generator</a>
+</li>
+                                    
+<li>
+    <a href="api/evaluate/" class="dropdown-item">Evaluate</a>
+</li>
+                                    
+<li>
+    <a href="api/plotting/" class="dropdown-item">Plotting</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="testing/" class="nav-link">Testing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="plot/" class="nav-link">Visualization</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="usage/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#smart-pixels-ml" class="nav-link">Smart Pixels (ML)</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#table-of-contents" class="nav-link">Table of Contents</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#getting-started" class="nav-link">Getting Started</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#dataset" class="nav-link">Dataset</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#data-generator" class="nav-link">Data Generator</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#testing" class="nav-link">Testing</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#model-architecture" class="nav-link">Model Architecture</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#model-evaluation" class="nav-link">Model Evaluation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="smart-pixels-ml">Smart Pixels (ML)</h1>
+<p align="left">
+  <a href="https://iopscience.iop.org/article/10.1088/2632-2153/ad6a00"><img src="https://img.shields.io/badge/Published%20in-IOP%20Science-blue"></a>
+  <a href="https://arxiv.org/abs/2312.11676"><img src="https://img.shields.io/badge/arXiv-2304.12345-red"></a>
+  <a href="https://github.com/smart-pix/smart-pixels-ml"><img src="https://img.shields.io/github/stars/smart-pix/smart-pixels-ml?style=social"></a>
+  <a href="https://github.com/smart-pix/smart-pixels-ml"><img src="https://img.shields.io/github/forks/smart-pix/smart-pixels-ml?style=social"></a>
+</p>
+
+<p>Smart Pixels is a project focused on implementing machine learning models directly on silicon pixels or future detectors to enhance the inference of charged particle track parameters. We here use an MDN (Mixture Density Network) with one Gaussian. This model predicts the mean value of the target variable and the associated uncertainty to that prediction, with NLL (Negative Log-likelihood Loss) as the loss function to minimize. </p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#dataset">Dataset</a></li>
+<li><a href="#structure">Structure</a></li>
+<li><a href="#data-visualization">Data Visualization</a></li>
+<li><a href="#data-generator">Data Generator</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#model-architecture">Model Architecture</a></li>
+<li><a href="#model-evaluation">Model Evaluation</a></li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="installation">Installation</h3>
+<ol>
+<li>Clone the repository:</li>
+</ol>
+<pre><code class="language-bash">git clone https://github.com/smart-pix/smart-pixels-ml.git
+cd smart-pixels-ml
+pip install -r requirements.txt
+</code></pre>
+<p>Testing successful installation by running </p>
+<pre><code class="language-bash">python test_run.py`
+</code></pre>
+<h3 id="usage">Usage</h3>
+<p>For the usage guide refer to <a href="usage/">Usage Guide</a></p>
+<h2 id="dataset">Dataset</h2>
+<p>Download the simulated data from: <a href="https://doi.org/10.5281/zenodo.7331128">zenodo</a>
+and <a href="https://docs.google.com/document/d/1ZoqVyJOOAXhzt2egMWh3OoNJ6lWq5lNR6sjcYON4Vlo/edit?tab=t.0#heading=h.k6tyal7z5t5l">PixelAV</a></p>
+<h3 id="structure">Structure</h3>
+<ul>
+<li>
+<p><strong>Input Data (dataX)</strong>: Consists of 2D images representing the charge deposited by a particle, with each channel showing a different time slice of the particle’s passage. You can choose to work with either <code>2</code> time slices (reduced) or the full <code>20</code> time slices. These correspond to input shapes of <code>(13, 21, 2)</code> and <code>(13, 21, 20)</code> respectively.</p>
+</li>
+<li>
+<p><strong>Labels (dataY)</strong>: <em>Four</em> target variables are chosen as the labls viz. local $x$, local $y$, $\alpha$ angle and $\beta$ angle, associated with the particle trajectory.</p>
+</li>
+</ul>
+<h3 id="data-visualization">Data Visualization</h3>
+<p>For visualization of the how the input data looks like, we have to define the path towards the <code>dataX</code> and optionally to the <em>labels</em> as </p>
+<pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+
+dataX = pd.read_parquet(&quot;path/to/recon3D_data_file&quot;)
+labels_df = pd.read_parquet(&quot;path/to/labels_data_file&quot;)
+reshaped_dataX = dataX.values.reshape((len(dataX), 20, 13, 21))
+
+print(labels_df.iloc[0])
+plt.imshow(reshaped_dataX[0, 0, :, :], cmap='coolwarm')  # first time-step
+plt.show()
+plt.imshow(reshaped_dataX[0, -1, :, :], cmap='coolwarm')  # last time-step
+plt.show()
+
+</code></pre>
+<h2 id="data-generator">Data Generator</h2>
+<p>Due to the large size of the dataset, the entire dataset can not be loaded into RAM. Hence, we use data generators to load the dataset on the fly during training with inbuilt quantization, standardization, shuffling, etc. 
+Refer to <a href="api/data_generator/">data generator</a> for more details.</p>
+<h2 id="testing">Testing</h2>
+<p>To test that everything is working fine try running the simple <code>test_run.py</code> file as</p>
+<pre><code class="language-bash">python test_run.py
+</code></pre>
+<h2 id="model-architecture">Model Architecture</h2>
+<p>The core model architecture is defined in <a href="../models.py">model.py</a>, which provides the baseline MDN architecture with quantized neural network layers. We use the Negative Log-Likelihood (NLL) as the loss function implemented in <a href="../loss.py">loss.py</a>. A good reading about it can be found <a href="https://towardsdatascience.com/mixture-density-networks-probabilistic-regression-for-uncertainty-estimation-5f7250207431">here</a></p>
+<p>Refer to <a href="api/models/">Model</a> and <a href="api/loss/">Loss</a> for more details.</p>
+<p><img alt="Model Architecture" src="Images/ML_model_arch.png" /></p>
+<p>As an example, to implement the model with 2 time slices:</p>
+<pre><code class="language-python">from model import *
+
+model=CreateModel((13,21,2),n_filters=5,pool_size=3)
+model.summary()
+</code></pre>
+<p>This generates a model with the following architecture:
+| Type                 | Output Shape        | Parameters |
+|----------------------|---------------------|------------|
+| InputLayer           | <code>(None, 13, 21, 2)</code>| 0          |
+| QSeparableConv2D     | <code>(None, 11, 19, 5)</code>| 33         |
+| QActivation          | <code>(None, 11, 19, 5)</code>| 0          |
+| QConv2D              | <code>(None, 11, 19, 5)</code>| 30         |
+| QActivation          | <code>(None, 11, 19, 5)</code>| 0          |
+| AveragePooling2D     | <code>(None, 3, 6, 5)</code> | 0          |
+| QActivation          | <code>(None, 3, 6, 5)</code> | 0          |
+| Flatten              | <code>(None, 90)</code> | 0          |
+| QDense               | <code>(None, 16)</code> | 1456       |
+| QActivation          | <code>(None, 16)</code> | 0          |
+| QDense               | <code>(None, 16)</code> | 272        |
+| QActivation          | <code>(None, 16)</code> | 0          |
+| QDense               | <code>(None, 14)</code> | 238        |</p>
+<h2 id="model-evaluation">Model Evaluation</h2>
+<p>Refer to <a href="api/evaluate/">Evaluate</a> for more details</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2024-12-30 20:10:37.977351+00:00
+-->

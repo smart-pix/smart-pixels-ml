@@ -1,0 +1,14 @@
+site_name: Smart Pixels ML Documentation
+nav:
+  - Home: README.md
+  - Usage: usage.md
+  - API Reference:
+      - Utils: api/utils.md
+      - Models: api/models.md
+      - Loss: api/loss.md
+      - Data Generator: api/data_generator.md
+      - Evaluate: api/evaluate.md
+      - Plotting: api/plotting.md
+  - Testing: testing.md
+  - Visualization: plot.md
+
