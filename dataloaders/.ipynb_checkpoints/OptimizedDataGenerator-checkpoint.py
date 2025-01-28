@@ -51,10 +51,10 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             transpose = None,
             include_y_local: bool = False,
             files_from_end = False,
-            shuffle=False,
-            current=False,
-            sample_delta_t=200,
-
+            shuffle = False,
+            current = False,
+            sample_delta_t = 200,
+                 
             # Added in Optimized datagenerators 
             load_from_tfrecords_dir: str = None,
             tfrecords_dir: str = None,
@@ -137,7 +137,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         self.dataset_mean = None
         self.dataset_std = None
 
-        # If data is already prepared load anduse that data
+        # If data is already prepared load and use that data
         if load_from_tfrecords_dir is not None:
             if not os.path.isdir(load_from_tfrecords_dir):
                 raise ValueError(f"Directory {load_from_tfrecords_dir} does not exist.")
@@ -305,7 +305,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             has_nans = np.arange(recon_df.shape[0])[has_nans]
             recon_df_raw = recon_df.drop(has_nans)
             labels_df_raw = labels_df.drop(has_nans)
-
+            
             joined_df = recon_df_raw.join(labels_df_raw)
 
             if self.shuffle: # Changed
