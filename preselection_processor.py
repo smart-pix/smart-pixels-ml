@@ -8,44 +8,38 @@ from tqdm import tqdm
 # Make sure to edit the paths in preselection_processing() for each dataset you process!
 
 def preselection_processing(pitch):
-    data_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/recon3D/'.format(pitch)
-    data2D_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/recon2D/'.format(pitch)
-    labels_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/labels/'.format(pitch)
+    directory_path = '/data/dajiang/smart-pixels/dataset_3sr/dataset_3sr_{}_parquets/unflipped/'.format(pitch)
     data_format = '3D'
     data2D_format = '2D'
     file_type = 'parquet'
     
     # recon3D files list
-    recon3D_files = glob.glob(data_directory_path + "recon" + data_format + "*." + file_type)
+    recon3D_files = glob.glob(directory_path + "recon" + data_format + "*." + file_type)
     recon3D_files.sort()
 
     # recon2D files list
-    recon2D_files = glob.glob(data2D_directory_path + "recon" + data2D_format + "*." + file_type)
+    recon2D_files = glob.glob(directory_path + "recon" + data2D_format + "*." + file_type)
     recon2D_files.sort()
     
     # labels files list
-    labels_files = [labels_directory_path + recon3D_file.split('/')[-1].replace("recon" + data_format, "labels") for recon3D_file in recon3D_files]
+    labels_files = [directory_path + recon3D_file.split('/')[-1].replace("recon" + data_format, "labels") for recon3D_file in recon3D_files]
     
     # join recon3D and labels lists together, sharing the same index for the corresponding file number
     joined_files = list(zip(recon3D_files, recon2D_files, labels_files))
     
     # filter the parquet files, then save them to a new directory
-    data_preselection_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/recon3D_cotBeta1P5/'.format(pitch)
-    data2D_preselection_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/recon2D_cotBeta1P5/'.format(pitch)
-    labels_preselection_directory_path = '/data/dajiang/smartPixels/dataset_3s/dataset_3sr_{}_parquets/unflipped/labels_cotBeta1P5/'.format(pitch)
+    output_dir = '/data/dajiang/smart-pixels/dataset_3sr/dataset_3sr_{}_cotBeta1P5_parquets/'.format(pitch)
 
-    if os.path.isdir(data_preselection_directory_path):
-        shutil.rmtree(data_preselection_directory_path)
-    os.mkdir(data_preselection_directory_path)
+    if os.path.isdir(output_dir):
+        shutil.rmtree(output_dir)
+    os.mkdir(output_dir)
 
-    if os.path.isdir(data2D_preselection_directory_path):
-        shutil.rmtree(data2D_preselection_directory_path)
-    os.mkdir(data2D_preselection_directory_path)
-
-    if os.path.isdir(labels_preselection_directory_path):
-        shutil.rmtree(labels_preselection_directory_path)
-    os.mkdir(labels_preselection_directory_path)
+    output_path = '/data/dajiang/smart-pixels/dataset_3sr/dataset_3sr_{}_cotBeta1P5_parquets/unflipped/'.format(pitch)
     
+    if os.path.isdir(output_path):
+        shutil.rmtree(output_path)
+    os.mkdir(output_path)
+
     for i in tqdm(range(len(joined_files)), desc="Processing files for {}".format(pitch)):
         recon3D_filename = joined_files[i][0]
         recon2D_filename = joined_files[i][1]
@@ -62,9 +56,9 @@ def preselection_processing(pitch):
         labels_df = labels_temp_df[preselections].reset_index(drop=True)
 
         # save to new directory
-        recon3D_df.to_parquet(data_preselection_directory_path + recon3D_filename.split('/')[-1])
-        recon2D_df.to_parquet(data2D_preselection_directory_path + recon2D_filename.split('/')[-1])
-        labels_df.to_parquet(labels_preselection_directory_path + labels_filename.split('/')[-1])
+        recon3D_df.to_parquet(output_path + recon3D_filename.split('/')[-1])
+        recon2D_df.to_parquet(output_path + recon2D_filename.split('/')[-1])
+        labels_df.to_parquet(output_path + labels_filename.split('/')[-1])
 
 if __name__ == '__main__':
     print('*** Preselection Processor ***')
