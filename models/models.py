@@ -58,98 +58,6 @@ def conv_network(var, n_filters=5, kernel_size=3):
     )(var)
     var = QActivation("quantized_tanh(4, 0, 1)")(var)    
     return var
-
-def conv_network_2x2(var, n_filters=5, kernel_size=3):
-    var = QSeparableConv2D(
-        n_filters,kernel_size,
-        depthwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        pointwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        depthwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        pointwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)
-    var = QConv2D(
-        n_filters,2,
-        kernel_quantizer=quantized_bits(4, 0, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        kernel_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)    
-    return var
-
-def conv_network_3x3(var, n_filters=5, kernel_size=3):
-    var = QSeparableConv2D(
-        n_filters,kernel_size,
-        depthwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        pointwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        depthwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        pointwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)
-    var = QConv2D(
-        n_filters,3,
-        kernel_quantizer=quantized_bits(4, 0, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        kernel_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)    
-    return var
-
-def conv_network_v2(var):
-    var = QSeparableConv2D(
-        filters=32,kernel_size=5,
-        depthwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        pointwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        depthwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        pointwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)
-    var = QSeparableConv2D(
-        filters=16,kernel_size=5,
-        depthwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        pointwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        depthwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        pointwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)    
-    return var
-
-def conv_network_v3(var):
-    var = QSeparableConv2D(
-        filters=32,kernel_size=5,
-        depthwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        pointwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        depthwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        pointwise_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)
-    var = AveragePooling2D(
-        pool_size=(3, 3), 
-        strides=None, 
-        padding="valid", 
-        data_format=None,        
-    )(var)
-    var = QConv2D(
-        filters=16,kernel_size=3,
-        kernel_quantizer=quantized_bits(4, 0, alpha=1),
-        bias_quantizer=quantized_bits(4, 0, alpha=1),
-        kernel_regularizer=tf.keras.regularizers.L1L2(0.01),
-        activity_regularizer=tf.keras.regularizers.L2(0.01),
-    )(var)
-    var = QActivation("quantized_tanh(4, 0, 1)")(var)    
-    return var
      
 def CreateModel(shape, n_filters, pool_size):
     x_base = x_in = Input(shape)
@@ -165,51 +73,72 @@ def CreateModel(shape, n_filters, pool_size):
     model = Model(inputs=x_in, outputs=stack)
     return model
 
-def CreateModel_v2(shape):
-    x_base = x_in = Input(shape)
-    stack = conv_network_v2(x_base)
-    stack = AveragePooling2D(
-        pool_size=(3, 3), 
-        strides=None, 
-        padding="valid", 
-        data_format=None,        
-    )(stack)
-    stack = QActivation("quantized_bits(8, 0, alpha=1)")(stack)
-    stack = var_network(stack, hidden=16, output=14)
-    model = Model(inputs=x_in, outputs=stack)
-    return model
-
-def CreateModel_v3(shape):
-    x_base = x_in = Input(shape)
-    stack = conv_network_v3(x_base)
-    stack = GlobalAveragePooling2D()(stack)
-    stack = QActivation("quantized_bits(8, 0, alpha=1)")(stack)
-    stack = QDense(
-        14,
+def var_network_ReLU(var, hidden=10, output=2):
+    var = Flatten()(var)
+    
+    # First QDense layer
+    var = QDense(
+        hidden,
         kernel_quantizer=quantized_bits(8, 0, alpha=1),
         bias_quantizer=quantized_bits(8, 0, alpha=1),
         kernel_regularizer=tf.keras.regularizers.L1L2(0.01),
-    )(stack)
-    model = Model(inputs=x_in, outputs=stack)
-    return model
+        activity_regularizer=tf.keras.regularizers.L2(0.01),
+        kernel_initializer=tf.keras.initializers.HeUniform(), # Xavier weight initialization (UNIFORM)
+        bias_initializer='zeros',
+    )(var)
+    var = QActivation("quantized_relu(8, 3, 1)")(var)
     
-def CreateModel_2x2(shape, n_filters, pool_size):
-    x_base = x_in = Input(shape)
-    stack = conv_network_2x2(x_base)
-    stack = AveragePooling2D(
-        pool_size=(pool_size, pool_size), 
-        strides=None, 
-        padding="valid", 
-        data_format=None,        
-    )(stack)
-    stack = QActivation("quantized_bits(8, 0, alpha=1)")(stack)
-    stack = var_network(stack, hidden=16, output=14)
-    model = Model(inputs=x_in, outputs=stack)
-    return model
+    # Second QDense layer
+    var = QDense(
+        hidden,
+        kernel_quantizer=quantized_bits(8, 0, alpha=1),
+        bias_quantizer=quantized_bits(8, 0, alpha=1),
+        kernel_regularizer=tf.keras.regularizers.L1L2(0.01),
+        activity_regularizer=tf.keras.regularizers.L2(0.01),
+        kernel_initializer=tf.keras.initializers.HeUniform(), # Xavier weight initialization (UNIFORM)
+        bias_initializer='zeros',
+    )(var)
+    var = QActivation("quantized_relu(8, 3, 1)")(var)
 
-def CreateModel_3x3(shape, n_filters, pool_size):
+    # Last QDense layer (output)
+    return QDense(
+        output,
+        kernel_quantizer=quantized_bits(8, 0, alpha=1),
+        bias_quantizer=quantized_bits(8, 0, alpha=1),
+        kernel_regularizer=tf.keras.regularizers.L1L2(0.01),
+        kernel_initializer=tf.keras.initializers.HeUniform(), # Xavier weight initialization (UNIFORM)
+        bias_initializer='zeros',
+    )(var)
+
+def conv_network_ReLU(var, n_filters=5, kernel_size=3):
+    var = QSeparableConv2D(
+        n_filters,kernel_size,
+        depthwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
+        pointwise_quantizer=quantized_bits(4, 0, 1, alpha=1),
+        bias_quantizer=quantized_bits(4, 0, alpha=1),
+        depthwise_regularizer=tf.keras.regularizers.L1L2(0.01),
+        pointwise_regularizer=tf.keras.regularizers.L1L2(0.01),
+        activity_regularizer=tf.keras.regularizers.L2(0.01),
+        depthwise_initializer=tf.keras.initializers.HeUniform(), # Xavier depthwise initialization (UNIFORM)
+        pointwise_initializer=tf.keras.initializers.HeUniform(),  # Xavier pointwise initialization (UNIFORM)
+        bias_initializer='zeros',
+    )(var)
+    var = QActivation("quantized_relu(4, 2, 1)")(var)
+    var = QConv2D(
+        n_filters,1,
+        kernel_quantizer=quantized_bits(4, 0, alpha=1),
+        bias_quantizer=quantized_bits(4, 0, alpha=1),
+        kernel_regularizer=tf.keras.regularizers.L1L2(0.01),
+        activity_regularizer=tf.keras.regularizers.L2(0.01),
+        kernel_initializer=tf.keras.initializers.HeUniform(), # Xavier kernel initialization (UNIFORM)
+        bias_initializer='zeros',
+    )(var)
+    var = QActivation("quantized_relu(4, 2, 1)")(var)    
+    return var
+
+def CreateModel_ReLU(shape, n_filters, pool_size):
     x_base = x_in = Input(shape)
-    stack = conv_network_3x3(x_base)
+    stack = conv_network_ReLU(x_base)
     stack = AveragePooling2D(
         pool_size=(pool_size, pool_size), 
         strides=None, 
@@ -217,6 +146,6 @@ def CreateModel_3x3(shape, n_filters, pool_size):
         data_format=None,        
     )(stack)
     stack = QActivation("quantized_bits(8, 0, alpha=1)")(stack)
-    stack = var_network(stack, hidden=16, output=14)
+    stack = var_network_ReLU(stack, hidden=16, output=14)
     model = Model(inputs=x_in, outputs=stack)
     return model

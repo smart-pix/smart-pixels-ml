@@ -20,7 +20,7 @@ from . import utils
 # custom quantizer
 
 # @tf.function
-def QKeras_data_prep_quantizer(data, bits=4, int_bits=0, alpha=1):
+def QKeras_data_prep_quantizer(data, bits=2, int_bits=0, alpha=1):
     """
     Applies QKeras quantization.
     Args:
