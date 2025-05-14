@@ -88,6 +88,9 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
                 self.tfrecords_dir = load_from_tfrecords_dir
         else:
             n_time, height, width = input_shape
+            
+            if use_time_stamps == -1:
+                use_time_stamps = list(np.arange(0,20))
             assert len(use_time_stamps) == n_time, f"Expected {n_time} time steps, got {len(use_time_stamps)}"
     
             len_xy = height * width
@@ -95,7 +98,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
                 np.arange(t * len_xy, (t + 1) * len_xy).astype(str)
                 for t in use_time_stamps
             ]
-            self.use_time_stamps = np.arange(0,20) if use_time_stamps == -1 else use_time_stamps
+            self.use_time_stamps = list(np.arange(0,20)) if use_time_stamps == -1 else use_time_stamps
             self.recon_cols = np.concatenate(col_indices).tolist()
     
     
