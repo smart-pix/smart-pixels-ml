@@ -18,7 +18,6 @@ from qkeras import quantized_bits
 import utils
 
 
-
 # custom quantizer
 
 # @tf.function
@@ -89,7 +88,6 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
                 self.tfrecords_dir = load_from_tfrecords_dir
         else:
             n_time, height, width = input_shape
-            
             if use_time_stamps == -1:
                 use_time_stamps = list(np.arange(0,20))
             assert len(use_time_stamps) == n_time, f"Expected {n_time} time steps, got {len(use_time_stamps)}"
