@@ -2,7 +2,6 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 
 # custom loss function
-@tf.function
 def custom_loss(y, p_base, minval=1e-9, maxval=1e9):
     
     p = p_base
