@@ -15,8 +15,7 @@ from tqdm import tqdm
 import tensorflow as tf
 from qkeras import quantized_bits
 
-import utils
-
+from . import utils
 
 
 # custom quantizer
@@ -89,7 +88,6 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
                 self.tfrecords_dir = load_from_tfrecords_dir
         else:
             n_time, height, width = input_shape
-            
             if use_time_stamps == -1:
                 use_time_stamps = list(np.arange(0,20))
             assert len(use_time_stamps) == n_time, f"Expected {n_time} time steps, got {len(use_time_stamps)}"
@@ -268,7 +266,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             parquet_file = self.files[file_idx]
 
             all_columns_to_read = self.recon_cols + self.labels_list
-            df = pd.read_parquet(parquet_file, columns=all_columns_to_read).reset_index(drop=True) 
+            df = pd.read_parquet(parquet_file, columns=all_columns_to_read)
 
             # df = pd.read_parquet(parquet_file, columns=self.use_time_stamps)
             recon_df, labels_df = split_df_to_X_y_df(df, self.input_shape, self.labels_list, self.recon_cols)
