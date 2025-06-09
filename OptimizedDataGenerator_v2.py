@@ -1,4 +1,4 @@
-# OptimizedDataGenerator_v2_v2.py
+# OptimizedDataGenerator_v2.py
 import os
 import gc
 import math
