@@ -45,6 +45,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             file_count = None,
             labels_list: Union[List,str] = ['x-midplane','y-midplane','cotAlpha','cotBeta'],
             to_standardize: bool = False,
+            force_clip_minmax_unity: bool = True,
             input_shape: Tuple = (13,21),
             transpose = None,
             files_from_end = False,
@@ -110,6 +111,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             self.input_shape = input_shape
             self.transpose = transpose
             self.to_standardize = to_standardize
+            self.force_clip_minmax_unity = force_clip_minmax_unity
 
             self.process_file_parallel()
             
@@ -177,6 +179,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             "recon_cols": self.recon_cols,
             "labels_list": self.labels_list,
             "to_standardize": self.to_standardize,
+            "force_clip_minmax_unity": self.force_clip_minmax_unity,
             "transpose": self.transpose,
             "shuffle": self.shuffle,
             
@@ -223,6 +226,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         self.recon_cols = metadata['recon_cols']
         self.labels_list = metadata['labels_list']
         self.to_standardize = metadata['to_standardize']
+        self.force_clip_minmax_unity = metadata['force_clip_minmax_unity']
         self.label_scale_pctl = metadata['label_scale_pctl']
         self.norm_pos_pctl = metadata['norm_pos_pctl']
         self.norm_neg_pctl = metadata['norm_neg_pctl']
@@ -335,7 +339,10 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         out = (x - self.dataset_mean)/self.dataset_std
         out[out > 0] = out[out > 0]/self.norm_factor_pos
         out[out < 0] = out[out < 0]/self.norm_factor_neg
-        out = np.clip(out, self.dataset_min, self.dataset_max)
+        if self.force_clip_minmax_unity:
+            out = np.clip(out, -1, 1)
+        else:
+            out = np.clip(out, self.dataset_min, self.dataset_max)
         return out
 
     def save_batches_sequentially(self):
