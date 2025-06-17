@@ -69,6 +69,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             use_time_stamps = -1,
             seed: int = None,
             quantize: bool = False,
+            select_contained = False, #If true, selects only clusters with original_atEdge==False
             max_workers: int = 1,
                  
             **kwargs,
@@ -129,6 +130,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             self.transpose = transpose
             self.to_standardize = to_standardize
             self.include_y_local = include_y_local
+            self.select_contained = select_contained
 
             self.process_file_parallel()
     
@@ -150,7 +152,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
 
     def process_file_parallel(self):
-        file_infos = [(afile, self.recon_cols, self.input_shape, self.transpose, self.labels_list) for afile in self.files]
+        file_infos = [(afile, self.recon_cols, self.input_shape, self.transpose, self.labels_list, self.select_contained) for afile in self.files]
         results = []
         with ProcessPoolExecutor(self.max_workers) as executor:
             futures = [executor.submit(self._process_file_single, file_info) for file_info in file_infos]
@@ -178,8 +180,13 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
     @staticmethod
     def _process_file_single(file_info):
-        afile, recon_cols, input_shape, transpose, labels_list = file_info
-        df = pd.read_parquet(afile, columns=recon_cols + labels_list)
+        afile, recon_cols, input_shape, transpose, labels_list,  select_contained = file_info
+        if select_contained:
+            df = pd.read_parquet(afile, columns=recon_cols + labels_list +['original_atEdge'])
+            df = df.loc[df['original_atEdge'] == False]
+        else:
+            df = pd.read_parquet(afile, columns=recon_cols + labels_list)
+        
         adf, _ = split_df_to_X_y_df(df, input_shape, labels_list, recon_cols)
 
         x = adf.values
@@ -266,10 +273,14 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         if file_idx != self.current_file_index:
             self.current_file_index = file_idx
             parquet_file = self.files[file_idx]
-
-            all_columns_to_read = self.recon_cols + self.labels_list
-            df = pd.read_parquet(parquet_file, columns=all_columns_to_read).reset_index(drop=True) 
-
+            if self.select_contained:
+                all_columns_to_read = self.recon_cols + self.labels_list + ['original_atEdge']
+                df = pd.read_parquet(parquet_file, columns = all_columns_to_read).reset_index(drop=True) 
+                df = df.loc[df['original_atEdge'] == False]
+            else:
+                all_columns_to_read = self.recon_cols + self.labels_list
+                df = pd.read_parquet(parquet_file, columns = all_columns_to_read).reset_index(drop=True)
+            
             # df = pd.read_parquet(parquet_file, columns=self.use_time_stamps)
             recon_df, labels_df = split_df_to_X_y_df(df, self.input_shape, self.labels_list, self.recon_cols)
 
