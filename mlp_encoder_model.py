@@ -54,7 +54,7 @@ def mlp_encoder_network(var, hidden=16, hidden_dimx=16, hidden_dimy=16):
     )(var)
     proj_y = Flatten()(proj_y)
 
-    proj_x = Dense(
+    proj_x = QDense(
         hidden_dimx,
         kernel_quantizer=quantized_bits(8, 0, alpha=1),
         bias_quantizer=quantized_bits(8, 0, alpha=1),
@@ -63,7 +63,7 @@ def mlp_encoder_network(var, hidden=16, hidden_dimx=16, hidden_dimy=16):
     )(proj_x)
     proj_x = QActivation("quantized_relu(bits=13, integer=5)(x)")(var)
 
-    proj_y = Dense(
+    proj_y = QDense(
         hidden_dimy,
         kernel_quantizer=quantized_bits(8, 0, alpha=1),
         bias_quantizer=quantized_bits(8, 0, alpha=1),
@@ -74,7 +74,7 @@ def mlp_encoder_network(var, hidden=16, hidden_dimx=16, hidden_dimy=16):
 
     var = Concatenate(axis=1)([proj_x, proj_y])
 
-    var = Dense(
+    var = QDense(
         hidden,
         kernel_quantizer=quantized_bits(8, 0, alpha=1),
         bias_quantizer=quantized_bits(8, 0, alpha=1),
