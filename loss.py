@@ -1,5 +1,6 @@
 import tensorflow as tf
 import tensorflow_probability as tfp
+import keras
 
 # custom loss function
 def custom_loss(y, p_base, minval=1e-9, maxval=1e9):
@@ -225,28 +226,43 @@ def custom_kld_loss(y, p_base, minval=1e-9, maxval=1e9):
 
     return kl_divergence
 
-# custom sse loss function (only predict values, no uncertainties)
-def custom_sse_loss(y, p_base, minval=1e-9, maxval=1e9):
+# custom mse loss function for "slim" model
+def custom_mse_loss(y, p_base, minval=1e-9, maxval=1e9):
 
     # truth values
     x_true = y[:,0]
     y_true = y[:,1]
-    cotA_true = y[:,2]
-    cotB_true = y[:,3]
+    cotB_true = y[:,2]
 
     # predictions
     p = p_base
     x_pred = p[:,0]
     y_pred = p[:,1]
-    cotA_pred = p[:,2]
-    cotB_pred = p[:,3]
+    cotB_pred = p[:,2]
+
+    loss = keras.losses.mean_squared_error(y[:,0:2], p[:, 0:2])
+
+    return loss
+
+# custom sse loss function for "slim" model
+def custom_sse_loss(y, p_base, minval=1e-9, maxval=1e9):
+
+    # truth values
+    x_true = y[:,0]
+    y_true = y[:,1]
+    cotB_true = y[:,2]
+
+    # predictions
+    p = p_base
+    x_pred = p[:,0]
+    y_pred = p[:,1]
+    cotB_pred = p[:,2]
 
     sse_x = tf.reduce_sum(tf.square(x_true - x_pred))
     sse_y = tf.reduce_sum(tf.square(y_true - y_pred))
-    sse_cotA = tf.reduce_sum(tf.square(cotA_true - cotA_pred))
     sse_cotB = tf.reduce_sum(tf.square(cotB_true - cotB_pred))
 
-    return (sse_x + sse_y + sse_cotA + sse_cotB) / 4.0
+    return (sse_x + sse_y + sse_cotB) / 3.0
 
 def custom_mle_loss(y, p_base, minval=1e-9, maxval=1e9):
     # truth values
