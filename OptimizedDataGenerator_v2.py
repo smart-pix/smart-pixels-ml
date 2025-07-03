@@ -54,6 +54,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             load_from_tfrecords_dir: str = None,
             tfrecords_dir: str = None,
             use_time_stamps = -1,
+            select_contained = False, #If true, selects only clusters with original_atEdge==False
             seed: int = None,
             quantize: bool = False,
             max_workers: int = 1,
@@ -110,6 +111,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             self.input_shape = input_shape
             self.transpose = transpose
             self.to_standardize = to_standardize
+            self.select_contained = select_contained
 
             self.process_file_parallel()
             
@@ -179,6 +181,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             "to_standardize": self.to_standardize,
             "transpose": self.transpose,
             "shuffle": self.shuffle,
+            "select_contained": self.select_contained,
             
             "seed": self.seed,
             "label_scale_pctl": self.label_scale_pctl,
@@ -223,6 +226,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         self.recon_cols = metadata['recon_cols']
         self.labels_list = metadata['labels_list']
         self.to_standardize = metadata['to_standardize']
+        self.select_contained = metadata['select_contained']
         self.label_scale_pctl = metadata['label_scale_pctl']
         self.norm_pos_pctl = metadata['norm_pos_pctl']
         self.norm_neg_pctl = metadata['norm_neg_pctl']
@@ -251,7 +255,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
     def process_file_parallel(self):
         file_infos = [(afile, 
-                    self.recon_cols, self.labels_list, 
+                    self.recon_cols, self.labels_list, self.select_contained, 
                     self.label_scale_pctl, self.norm_pos_pctl, self.norm_neg_pctl) 
                     for afile in self.files
                     ]
@@ -292,9 +296,17 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
     @staticmethod
     def _process_file_single(file_info):
-        afile, recon_cols, labels_list, label_scale_pctl, norm_pos_pctl, norm_neg_pctl = file_info
-
-        df = pd.read_parquet(afile, columns=recon_cols + labels_list).reset_index(drop=True)
+        afile, recon_cols, labels_list, select_contained, label_scale_pctl, norm_pos_pctl, norm_neg_pctl = file_info
+        if select_contained:
+            df = (pd.read_parquet(afile, 
+                                 columns=recon_cols + labels_list +['original_atEdge'])
+                    .reset_index(drop=True))
+            df = df.loc[df['original_atEdge'] == False]
+        else:
+            df = (pd.read_parquet(afile, 
+                                 columns=recon_cols + labels_list)
+                    .reset_index(drop=True))
+        # df = pd.read_parquet(afile, columns=recon_cols + labels_list).reset_index(drop=True)
         x = df[recon_cols].values
 
         nonzeros = abs(x) > 0
@@ -485,10 +497,23 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
             if file_idx != self.current_file_index:
                 parquet_file = self.files[file_idx]
-                df = (pd.read_parquet(parquet_file,
-                                    columns=self.recon_cols + self.labels_list)
-                        .dropna(subset=self.recon_cols)
-                        .reset_index(drop=True))
+                if self.select_contained:
+                    all_columns_to_read = self.recon_cols + self.labels_list + ['original_atEdge']
+                    df = (pd.read_parquet(parquet_file, 
+                                         columns = all_columns_to_read)
+                            .dropna(subset=self.recon_cols)
+                            .reset_index(drop=True))
+                    df = df.loc[df['original_atEdge'] == False]
+                else:
+                    all_columns_to_read = self.recon_cols + self.labels_list
+                    df =(pd.read_parquet(parquet_file, 
+                                         columns = all_columns_to_read)
+                            .dropna(subset=self.recon_cols)
+                            .reset_index(drop=True))
+                # df = (pd.read_parquet(parquet_file,
+                #                     columns=self.recon_cols + self.labels_list)
+                #         .dropna(subset=self.recon_cols)
+                #         .reset_index(drop=True))
                 if self.shuffle:
                     df = df.sample(frac=1, random_state=self.seed).reset_index(drop=True)
                 recon_df  = df[self.recon_cols]
