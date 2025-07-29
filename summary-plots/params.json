@@ -1,10 +1,12 @@
 {
-    "max_2dconv_20t" : 1000,
+    "max_2dconv_20t" : 2121,
     "full_2dconv_20t": 1000,
-    "max_2dconv_2t" : 1000,
+    "max_2dconv_2t" : 1869,
     "full_2dconv_2t" : 1000,
     "full_1dconv_20t" : 1000,
     "full_1dconv_2t" : 1000,
-    "full_mlp_20t" : 1000,
-    "full_mlp_2t" : 1000
+    "full_mlp_20t" : 11480,
+    "full_mlp_2t" : 2264,
+    "slim_mlp_20t" : 11395,
+    "slim_mlp_2t" : 2179
 }
