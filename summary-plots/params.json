@@ -3,6 +3,7 @@
     "full_2dconv_20t": 1000,
     "max_2dconv_2t" : 1869,
     "full_2dconv_2t" : 1000,
+    "max_1dconv_2t" : 1000,
     "full_1dconv_20t" : 1000,
     "full_1dconv_2t" : 1000,
     "full_mlp_20t" : 11480,
