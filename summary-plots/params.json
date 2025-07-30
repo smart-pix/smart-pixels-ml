@@ -4,10 +4,17 @@
     "max_2dconv_2t" : 1869,
     "full_2dconv_2t" : 1000,
     "max_1dconv_2t" : 1000,
-    "full_1dconv_20t" : 1000,
-    "full_1dconv_2t" : 1000,
+    "full_1dconv_20t" : 3274,
+    "full_1dconv_2t" : 2734,
+    "slim_1dconv_20t" : 3189,
+    "slim_1dconv_2t" : 2649,
+    "full_1dconv_20t_wbquant_compressed" : 2020,
+    "full_1dconv_2t_wbquant_compressed" : 1588,
+    "slim_1dconv_20t_wbquant_compressed" : 1975,
+    "slim_1dconv_2t_wbquant_compressed" : 1543,
     "full_mlp_20t" : 11480,
     "full_mlp_2t" : 2264,
     "slim_mlp_20t" : 11395,
     "slim_mlp_2t" : 2179
+    
 }
