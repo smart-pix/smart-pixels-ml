@@ -74,8 +74,6 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             select_contained = False, #If true, selects only clusters with chargeOriginal_atEdge<50
             noise = -1, #add gaussian noise (mu, sigma), set to -1 to turn off
             seed: int = None,
-            min_threshold: float = None, #Zeros out charge<min_thresh
-            max_threshold: float = None, #Sets charge>max_thresh to max_thresh
             quantize: bool = False,
             digitize: bool = False, # for the manual 2bit mapping
             digitize_levels: Union[List[float], np.ndarray] = None,
@@ -136,13 +134,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             self.transpose = transpose
             self.to_standardize = to_standardize
             self.log_compression = log_compression
-            self.noise = noise
             self.select_contained = select_contained
-            self.min_threshold = min_threshold
-            self.max_threshold = max_threshold
-            if (max_threshold is not None) and (min_threshold is not None) and (max_threshold < min_threshold):
-                raise ValueError("max_threshold < min_threshold!")
-
             self.process_file_parallel()
             
             
@@ -193,6 +185,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             
         self.tfrecord_filenames = np.sort(np.array(tf.io.gfile.glob(os.path.join(self.tfrecords_dir, "*.tfrecord"))))
         self.quantize = quantize
+        self.noise = noise
 
         # manual 2-bit digitization (FOR LOADING TFRecords ONLY!)
         self.digitize = digitize
@@ -230,11 +223,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             "log_compression": self.log_compression,
             "transpose": self.transpose,
             "shuffle": self.shuffle,
-            "noise": self.noise,
             "select_contained": self.select_contained,
-            "min_threshold": self.min_threshold,
-            "max_threshold": self.max_threshold,
-            
             "seed": self.seed,
             "label_scale_pctl": self.label_scale_pctl,
             "norm_pos_pctl": self.norm_pos_pctl,
@@ -302,9 +291,6 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         self.shuffle = metadata.get('shuffle', False)
         self.seed = metadata.get('seed', 13)
         self.transpose = metadata.get('transpose', None)
-        self.noise = metadata.get('noise', -1)
-        self.min_threshold = metadata.get('min_threshold', None)
-        self.max_threshold = metadata.get('max_threshold', None)
 
         if self.shuffle:
             self.rng = np.random.default_rng(seed=self.seed)
@@ -312,7 +298,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
     def process_file_parallel(self):
         file_infos = [(afile, 
-                    self.recon_cols, self.labels_list, self.noise, self.min_threshold, self.max_threshold, self.select_contained, 
+                    self.recon_cols, self.labels_list, self.select_contained, 
                     self.log_compression, self.label_scale_pctl, self.norm_pos_pctl, self.norm_neg_pctl, self.labels_scale) 
                     for afile in self.files
                     ]
@@ -357,7 +343,7 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
 
     @staticmethod
     def _process_file_single(file_info):
-        afile, recon_cols, labels_list, noise, min_threshold, max_threshold, select_contained, log_compression, label_scale_pctl, norm_pos_pctl, norm_neg_pctl, custom_labels_scale = file_info
+        afile, recon_cols, labels_list, select_contained, log_compression, label_scale_pctl, norm_pos_pctl, norm_neg_pctl, custom_labels_scale = file_info
         if select_contained:
             df = (pd.read_parquet(afile, 
                                  columns=recon_cols + labels_list +['chargeOriginal_atEdge'])
@@ -369,16 +355,6 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
                     .reset_index(drop=True))
         # df = pd.read_parquet(afile, columns=recon_cols + labels_list).reset_index(drop=True)
         x = df[recon_cols].values
-        
-        if noise != -1:
-            bkg = np.random.normal(*noise, x.shape)
-            x = x+bkg
-        if min_threshold is not None:
-            bellowthresh = x < min_threshold
-            x[bellowthresh] = 0
-        if max_threshold is not None:
-            abovethresh = x > max_threshold
-            x[abovethresh] = max_threshold
             
         manual_labels_scale = False
         if custom_labels_scale is not None:
@@ -600,16 +576,6 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
                 labels_df = df[self.labels_list]
 
                 recon_values = recon_df.values
-                if self.noise !=-1:
-                    bkg = np.random.normal(*self.noise, recon_values.shape)
-                    recon_values = recon_values + bkg
-                if self.min_threshold is not None: 
-                    bellowthresh = recon_values < self.min_threshold
-                    recon_values[bellowthresh] = 0 
-                if self.max_threshold is not None: 
-                    abovethresh = recon_values > self.max_threshold
-                    recon_values[abovethresh] = self.max_threshold 
-                
                 nonzeros = abs(recon_values) > 0
                 if self.log_compression:
                     recon_values[nonzeros] = np.sign(recon_values[nonzeros]) * np.log1p(abs(recon_values[nonzeros])) / np.log(2)
@@ -716,6 +682,11 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         X_batch = tf.reshape(X_batch, [-1, *X_batch.shape[1:]])
         y_batch = tf.reshape(y_batch, [-1, *y_batch.shape[1:]])
 
+        if self.noise != -1: # add noise first before quantization/digitization
+            mu, sigma = self.noise
+            noise_array = np.random.normal(loc=mu, scale=sigma, size=X_batch.shape)
+            X_batch = X_batch + noise_array
+
         if self.quantize:
             X_batch = QKeras_data_prep_quantizer(X_batch, bits=4, int_bits=0, alpha=1)
         
@@ -785,4 +756,3 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         if self.shuffle:
             self.rng.shuffle(self.tfrecord_filenames)
             self.seed += 1 # So that after each epoch the batch is shuffled with a different seed (deterministic)
-
