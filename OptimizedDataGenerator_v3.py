@@ -186,6 +186,12 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         self.tfrecord_filenames = np.sort(np.array(tf.io.gfile.glob(os.path.join(self.tfrecords_dir, "*.tfrecord"))))
         self.quantize = quantize
         self.noise = noise
+        #Make the TFRDatasets once upon initialization and iterate in __getitem__
+        self.datasets = [
+            tf.data.TFRecordDataset(path)
+              .map(self._parse_tfrecord_fn)
+            for path in self.tfrecord_filenames
+        ]
 
         # manual 2-bit digitization (FOR LOADING TFRecords ONLY!)
         self.digitize = digitize
@@ -669,13 +675,10 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
         shuffling is also done here.
         TODO: prefetching (un-done)
         """
-        tfrecord_path = self.tfrecord_filenames[batch_index]
-        raw_dataset = tf.data.TFRecordDataset(tfrecord_path)
-        parsed_dataset = raw_dataset.map(self._parse_tfrecord_fn, num_parallel_calls=tf.data.AUTOTUNE)
 
         # Get the first (and only) batch from the dataset
         try:
-            X_batch, y_batch = next(iter(parsed_dataset))
+            X_batch, y_batch = next(iter(self.datasets[batch_index]))
         except StopIteration:
             raise ValueError(f"No data found in TFRecord file: {tfrecord_path}")
 
@@ -699,7 +702,6 @@ class OptimizedDataGenerator(tf.keras.utils.Sequence):
             X_batch = tf.gather(X_batch, shuffled_indices)
             y_batch = tf.gather(y_batch, shuffled_indices)
 
-        del raw_dataset, parsed_dataset
         return X_batch, y_batch
             
     @staticmethod
